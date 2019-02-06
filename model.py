@@ -8,10 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-def __repr__(self):
-    """Provied helpful representation when printed"""
 
-    return ('User user_id={} email={}>'.format(self.user_id, self.email))
 
 
 ##############################################################################
@@ -28,6 +25,11 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    def __repr__(self):
+        """Provied helpful representation when printed"""
+
+        return ('User user_id={} email={}>'.format(self.user_id, self.email))
+
 
 # Put your Movie and Rating model classes here.
 
@@ -40,6 +42,9 @@ class Movie(db.Model):
     title = db.Column(db.String(100), nullable=False)
     released_at = db.Column(db.DateTime, nullable=False)
     imdb_url = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return ('movie id: {}, released_at: {}'.format(self.movie_id, self.released_at))
 
 class Rating(db.Model):
     """Rating table for rantings website."""
