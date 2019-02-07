@@ -31,6 +31,61 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+@app.route("/register", methods=["GET"])
+def register_form():
+    """Registering a user"""
+
+    return render_template("register_form.html")
+
+@app.route("/register", methods=["POST"])
+def register_process():
+    """Getting stored email and password"""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    
+    query= User.query.filter(User.email == email).first()
+    if not query:
+        user = User(email=email,password=password)
+        db.session.add(user)
+        db.session.commit()
+
+
+    return redirect("/")
+
+@app.route("/login")
+def login_info():
+
+
+
+
+
+    return render_template("login_form.html")
+
+@app.route("/logged_in", methods=["POST"])
+def logged_in():
+    email = request.form.get("email")
+    password = request.form.get("password")
+    print("\n\n\n\n\n\n")
+    print(email)
+    print(password)
+
+    
+    #Email and password query check if mateches
+    query = User.query.filter(User.email == email , User.password == password).first()
+
+    print("\n\n\n\n\n\n")
+    print(query)
+    
+
+    if query:
+        session['user_id'] = query.user_id
+        return redirect('/')
+    else:
+        return redirect('/login')
+
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
