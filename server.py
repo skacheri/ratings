@@ -22,6 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
+
     return render_template("homepage.html")
 
 @app.route("/users")
@@ -30,6 +31,20 @@ def user_list():
 
     users = User.query.all()
     return render_template("user_list.html", users=users)
+
+@app.route("/users/<user_id>")
+def user_details(user_id):
+    """Show user details"""
+
+    user = User.query.filter(user_id==user_id).all()
+    age = user.age
+    zipcode = user.zipcode
+
+
+    # user = db.relationship("User", backref=db.backref("ratings",order_by=rating_id))
+    # movie = db.relationship("Movie",backref=db.backref("ratings",order_by=rating_id))
+
+    return render_template("user_details.html", age=age, zipcode=zipcode)    
 
 @app.route("/register", methods=["GET"])
 def register_form():
@@ -45,6 +60,7 @@ def register_process():
     password = request.form.get("password")
     
     query= User.query.filter(User.email == email).first()
+
     if not query:
         user = User(email=email,password=password)
         db.session.add(user)
@@ -56,33 +72,33 @@ def register_process():
 @app.route("/login")
 def login_info():
 
-
-
-
-
     return render_template("login_form.html")
 
-@app.route("/logged_in", methods=["POST"])
+@app.route("/logged_in", methods=['GET','POST'])
 def logged_in():
+
     email = request.form.get("email")
     password = request.form.get("password")
-    print("\n\n\n\n\n\n")
-    print(email)
-    print(password)
 
-    
     #Email and password query check if mateches
     query = User.query.filter(User.email == email , User.password == password).first()
 
-    print("\n\n\n\n\n\n")
-    print(query)
-    
 
     if query:
         session['user_id'] = query.user_id
+        flash('You are successfully logged in')
         return redirect('/')
+
     else:
         return redirect('/login')
+
+@app.route("/logged_out")
+def logged_out():
+
+    session.pop('user_id', None)
+    flash("You are logged out")
+
+    return redirect('/')
 
 
 
